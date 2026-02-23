@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import Expenses from '../Expenses'
+import Categories from '../Categories'
 import Accounts from '../Accounts'
-import Transactions from '../Transactions'
+import Operations from '../Operations'
 import Overview from '../Overview'
 import Planned from '../Planned'
 
@@ -16,13 +16,13 @@ describe('Sections API integration', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
-  it('loads expenses categories', async () => {
+  it('loads categories stats', async () => {
     const api = (await import('../../../api/client')).default
     api.get
       .mockResolvedValueOnce({ data: [] })
       .mockResolvedValueOnce({ data: [] })
       .mockResolvedValueOnce({ data: [] })
-    render(<Expenses />)
+    render(<Categories />)
     await waitFor(() => expect(api.get).toHaveBeenCalled())
     expect(screen.getByText(/Нет данных/i)).toBeInTheDocument()
   })
@@ -35,13 +35,13 @@ describe('Sections API integration', () => {
     expect(screen.getByText(/Счетов пока нет/i)).toBeInTheDocument()
   })
 
-  it('loads transactions', async () => {
+  it('loads operations', async () => {
     const api = (await import('../../../api/client')).default
     api.get
       .mockResolvedValueOnce({ data: [] })
       .mockResolvedValueOnce({ data: [] })
       .mockResolvedValueOnce({ data: [] })
-    render(<Transactions />)
+    render(<Operations />)
     await waitFor(() => expect(api.get).toHaveBeenCalled())
     expect(screen.getByText(/Операций пока нет/i)).toBeInTheDocument()
   })
@@ -93,7 +93,7 @@ describe('Sections API integration', () => {
       data: { id: 1, name: 'Food', icon: '', color: '' },
     })
     const user = userEvent.setup()
-    render(<Expenses />)
+    render(<Categories />)
     await waitFor(() => expect(api.get).toHaveBeenCalled())
     await user.type(screen.getByLabelText(/Название категории/i), 'Food')
     await user.click(screen.getByRole('button', { name: /Добавить категорию/i }))
@@ -115,17 +115,14 @@ describe('Sections API integration', () => {
     expect(api.post).toHaveBeenCalled()
   })
 
-  it('applies transactions filters', async () => {
+  it('renders operations list', async () => {
     const api = (await import('../../../api/client')).default
     api.get
       .mockResolvedValueOnce({ data: [] })
       .mockResolvedValueOnce({ data: [] })
       .mockResolvedValueOnce({ data: [] })
-    const user = userEvent.setup()
-    render(<Transactions />)
+    render(<Operations />)
     await waitFor(() => expect(api.get).toHaveBeenCalled())
-    await user.type(screen.getByLabelText(/^С$/i), '2025-01-01')
-    await user.click(screen.getByRole('button', { name: /Применить фильтры/i }))
-    expect(api.get).toHaveBeenCalled()
+    expect(screen.getByText(/Операций пока нет/i)).toBeInTheDocument()
   })
 })

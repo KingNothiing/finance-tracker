@@ -9,7 +9,7 @@ describe('Dashboard', () => {
         <Dashboard />
       </MemoryRouter>
     )
-    expect(screen.getByRole('link', { name: /Траты/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Категории/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Счета/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Операции/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Обзор/i })).toBeInTheDocument()

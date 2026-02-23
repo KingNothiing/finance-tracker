@@ -137,3 +137,25 @@ body {
   background: #f0e6d7;
   font-size: 12px;
 }
+
+.circle-wrap {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  display: grid;
+  place-items: center;
+}
+
+.category-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border: 1px solid #eee4d6;
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-size: 12px;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}

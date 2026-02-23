@@ -1,9 +1,9 @@
 import { Link, Route, Routes, useNavigate } from 'react-router-dom'
 import Accounts from './sections/Accounts'
-import Expenses from './sections/Expenses'
+import Categories from './sections/Categories'
 import Overview from './sections/Overview'
 import Planned from './sections/Planned'
-import Transactions from './sections/Transactions'
+import Operations from './sections/Operations'
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -18,21 +18,21 @@ export default function Dashboard() {
       <div className="card" style={{ maxWidth: 900 }}>
         <h1>Finance Tracker</h1>
         <div className="nav">
-          <Link to="expenses">Траты</Link>
-          <Link to="accounts">Счета</Link>
-          <Link to="transactions">Операции</Link>
-          <Link to="overview">Обзор</Link>
-          <Link to="planned">Покупки</Link>
+          <Link to="/app/categories">Категории</Link>
+          <Link to="/app/accounts">Счета</Link>
+          <Link to="/app/operations">Операции</Link>
+          <Link to="/app/overview">Обзор</Link>
+          <Link to="/app/planned">Покупки</Link>
           <button className="btn secondary" onClick={logout} type="button">
             Выйти
           </button>
         </div>
 
         <Routes>
-          <Route index element={<Expenses />} />
-          <Route path="expenses" element={<Expenses />} />
+          <Route index element={<Categories />} />
+          <Route path="categories" element={<Categories />} />
           <Route path="accounts" element={<Accounts />} />
-          <Route path="transactions" element={<Transactions />} />
+          <Route path="operations" element={<Operations />} />
           <Route path="overview" element={<Overview />} />
           <Route path="planned" element={<Planned />} />
         </Routes>
