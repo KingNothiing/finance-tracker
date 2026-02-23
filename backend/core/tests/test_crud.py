@@ -117,3 +117,27 @@ class CrudTests(TestCase):
         list_resp = self.client.get("/api/planned-purchases/")
         self.assertEqual(list_resp.status_code, 200)
         self.assertEqual(len(list_resp.data), 1)
+
+    def test_transactions_filters(self):
+        account = Account.objects.create(user=self.user, name="Card", type="card", balance=0)
+        category = Category.objects.create(user=self.user, name="Food")
+        Transaction.objects.create(
+            user=self.user,
+            account=account,
+            category=category,
+            amount="10.00",
+            date=date(2025, 1, 1),
+            type="expense",
+        )
+        Transaction.objects.create(
+            user=self.user,
+            account=account,
+            category=category,
+            amount="20.00",
+            date=date(2025, 2, 1),
+            type="income",
+        )
+        response = self.client.get("/api/transactions/", {"from": "2025-02-01"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["type"], "income")

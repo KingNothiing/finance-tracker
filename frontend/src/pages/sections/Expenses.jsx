@@ -13,6 +13,11 @@ export default function Expenses() {
   const [catColor, setCatColor] = useState('')
   const [defaultAccountId, setDefaultAccountId] = useState('')
   const [accounts, setAccounts] = useState([])
+  const [editingId, setEditingId] = useState(null)
+  const [editName, setEditName] = useState('')
+  const [editIcon, setEditIcon] = useState('')
+  const [editColor, setEditColor] = useState('')
+  const [editDefaultAccountId, setEditDefaultAccountId] = useState('')
 
   useEffect(() => {
     const load = async () => {
@@ -54,6 +59,42 @@ export default function Expenses() {
       setDefaultAccountId('')
     } catch (err) {
       setError('Не удалось создать категорию')
+    }
+  }
+
+  const startEdit = (cat) => {
+    setEditingId(cat.id)
+    setEditName(cat.name)
+    setEditIcon(cat.icon || '')
+    setEditColor(cat.color || '')
+    setEditDefaultAccountId(cat.default_account_id || '')
+  }
+
+  const saveEdit = async (e) => {
+    e.preventDefault()
+    setError('')
+    try {
+      const payload = {
+        name: editName,
+        icon: editIcon,
+        color: editColor,
+        default_account_id: editDefaultAccountId || null,
+      }
+      const { data: updated } = await api.patch(`/categories/${editingId}/`, payload)
+      setCategories((prev) => prev.map((c) => (c.id === updated.id ? updated : c)))
+      setEditingId(null)
+    } catch (err) {
+      setError('Не удалось обновить категорию')
+    }
+  }
+
+  const remove = async (id) => {
+    setError('')
+    try {
+      await api.delete(`/categories/${id}/`)
+      setCategories((prev) => prev.filter((c) => c.id !== id))
+    } catch (err) {
+      setError('Не удалось удалить категорию')
     }
   }
 
@@ -137,6 +178,25 @@ export default function Expenses() {
               })}
             </ul>
           )}
+          {data.length > 0 && (
+            <div className="legend">
+              {data.map((row, idx) => {
+                const cat = categories.find((c) => c.id === row.category_id)
+                return (
+                  <div className="legend-item" key={row.category_id || idx}>
+                    <span
+                      className="legend-dot"
+                      style={{ background: cat?.color || '#ccc' }}
+                    />
+                    <span>
+                      {cat?.icon ? `${cat.icon} ` : ''}
+                      {cat?.name || 'Без категории'}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
       </div>
       <h3>Категории</h3>
@@ -145,7 +205,91 @@ export default function Expenses() {
         <ul>
           {categories.map((cat) => (
             <li key={cat.id}>
-              {cat.name} {cat.icon} {cat.color}
+              {editingId === cat.id ? (
+                <form onSubmit={saveEdit}>
+                  <div className="field">
+                    <label htmlFor={`cat-name-${cat.id}`}>Название</label>
+                    <input
+                      id={`cat-name-${cat.id}`}
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label htmlFor={`cat-icon-${cat.id}`}>Иконка</label>
+                    <input
+                      id={`cat-icon-${cat.id}`}
+                      value={editIcon}
+                      onChange={(e) => setEditIcon(e.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label htmlFor={`cat-color-${cat.id}`}>Цвет</label>
+                    <input
+                      id={`cat-color-${cat.id}`}
+                      value={editColor}
+                      onChange={(e) => setEditColor(e.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label htmlFor={`cat-acc-${cat.id}`}>Счет по умолчанию</label>
+                    <select
+                      id={`cat-acc-${cat.id}`}
+                      value={editDefaultAccountId}
+                      onChange={(e) => setEditDefaultAccountId(e.target.value)}
+                    >
+                      <option value="">Не задан</option>
+                      {accounts.map((acc) => (
+                        <option key={acc.id} value={acc.id}>
+                          {acc.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <button className="btn" type="submit">
+                    Сохранить
+                  </button>
+                  <button
+                    className="btn secondary"
+                    type="button"
+                    onClick={() => setEditingId(null)}
+                  >
+                    Отмена
+                  </button>
+                </form>
+              ) : (
+                <>
+                  <span className="tag">
+                    <span
+                      className="legend-dot"
+                      style={{ background: cat.color || '#ccc' }}
+                    />
+                    {cat.icon ? `${cat.icon} ` : ''}
+                    {cat.name}
+                  </span>
+                  {cat.default_account_id && (
+                    <span style={{ marginLeft: 8 }}>
+                      Счет по умолчанию: {cat.default_account_id}
+                    </span>
+                  )}
+                  <button
+                    className="btn secondary"
+                    type="button"
+                    onClick={() => startEdit(cat)}
+                    style={{ marginLeft: 8 }}
+                  >
+                    Редактировать
+                  </button>
+                  <button
+                    className="btn secondary"
+                    type="button"
+                    onClick={() => remove(cat.id)}
+                    style={{ marginLeft: 8 }}
+                  >
+                    Удалить
+                  </button>
+                </>
+              )}
             </li>
           ))}
         </ul>

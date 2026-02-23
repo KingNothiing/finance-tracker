@@ -114,4 +114,18 @@ describe('Sections API integration', () => {
     await user.click(screen.getByRole('button', { name: /Добавить покупку/i }))
     expect(api.post).toHaveBeenCalled()
   })
+
+  it('applies transactions filters', async () => {
+    const api = (await import('../../../api/client')).default
+    api.get
+      .mockResolvedValueOnce({ data: [] })
+      .mockResolvedValueOnce({ data: [] })
+      .mockResolvedValueOnce({ data: [] })
+    const user = userEvent.setup()
+    render(<Transactions />)
+    await waitFor(() => expect(api.get).toHaveBeenCalled())
+    await user.type(screen.getByLabelText(/^С$/i), '2025-01-01')
+    await user.click(screen.getByRole('button', { name: /Применить фильтры/i }))
+    expect(api.get).toHaveBeenCalled()
+  })
 })

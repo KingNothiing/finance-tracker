@@ -45,7 +45,25 @@ class TransactionViewSet(UserOwnedQuerysetMixin, viewsets.ModelViewSet):
     model = Transaction
 
     def get_queryset(self):
-        return Transaction.objects.filter(user=self.request.user)
+        qs = Transaction.objects.filter(user=self.request.user)
+        params = self.request.query_params
+        date_from = params.get("from")
+        date_to = params.get("to")
+        category_id = params.get("category_id")
+        account_id = params.get("account_id")
+        tx_type = params.get("type")
+
+        if date_from:
+            qs = qs.filter(date__gte=date_from)
+        if date_to:
+            qs = qs.filter(date__lte=date_to)
+        if category_id:
+            qs = qs.filter(category_id=category_id)
+        if account_id:
+            qs = qs.filter(account_id=account_id)
+        if tx_type:
+            qs = qs.filter(type=tx_type)
+        return qs
 
 
 class PlannedPurchaseViewSet(UserOwnedQuerysetMixin, viewsets.ModelViewSet):

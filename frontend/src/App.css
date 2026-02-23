@@ -107,3 +107,33 @@ body {
 .section svg {
   flex: 0 0 auto;
 }
+
+.legend {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.legend-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ccc;
+  display: inline-block;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #f0e6d7;
+  font-size: 12px;
+}
