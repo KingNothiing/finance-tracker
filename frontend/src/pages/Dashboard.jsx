@@ -1,55 +1,18 @@
-import { Link, Route, Routes } from 'react-router-dom'
-
-function Section({ title, children }) {
-  return (
-    <div className="section">
-      <h2>{title}</h2>
-      {children}
-    </div>
-  )
-}
-
-function Expenses() {
-  return (
-    <Section title="Траты">
-      <p>Кольцевая диаграмма по категориям (месяц).</p>
-    </Section>
-  )
-}
-
-function Accounts() {
-  return (
-    <Section title="Счета">
-      <p>Список счетов и их типы.</p>
-    </Section>
-  )
-}
-
-function Transactions() {
-  return (
-    <Section title="Операции">
-      <p>История операций по датам.</p>
-    </Section>
-  )
-}
-
-function Overview() {
-  return (
-    <Section title="Обзор">
-      <p>Статистика, графики и сводка.</p>
-    </Section>
-  )
-}
-
-function Planned() {
-  return (
-    <Section title="Запланированные покупки">
-      <p>Список целей с ценой и ссылкой.</p>
-    </Section>
-  )
-}
+import { Link, Route, Routes, useNavigate } from 'react-router-dom'
+import Accounts from './sections/Accounts'
+import Expenses from './sections/Expenses'
+import Overview from './sections/Overview'
+import Planned from './sections/Planned'
+import Transactions from './sections/Transactions'
 
 export default function Dashboard() {
+  const navigate = useNavigate()
+  const logout = () => {
+    localStorage.removeItem('access')
+    localStorage.removeItem('refresh')
+    navigate('/login')
+  }
+
   return (
     <div className="page" style={{ alignItems: 'start' }}>
       <div className="card" style={{ maxWidth: 900 }}>
@@ -60,6 +23,9 @@ export default function Dashboard() {
           <Link to="transactions">Операции</Link>
           <Link to="overview">Обзор</Link>
           <Link to="planned">Покупки</Link>
+          <button className="btn secondary" onClick={logout} type="button">
+            Выйти
+          </button>
         </div>
 
         <Routes>

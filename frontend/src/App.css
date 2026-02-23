@@ -73,6 +73,7 @@ body {
   gap: 10px;
   flex-wrap: wrap;
   margin-bottom: 16px;
+  align-items: center;
 }
 
 .nav a {
@@ -88,4 +89,9 @@ body {
   border: 1px solid #eee4d6;
   border-radius: 16px;
   padding: 16px;
+}
+
+.section ul {
+  padding-left: 18px;
+  margin: 12px 0 0;
 }
