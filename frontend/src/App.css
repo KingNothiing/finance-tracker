@@ -103,3 +103,7 @@ body {
   padding-left: 18px;
   margin: 12px 0 0;
 }
+
+.section svg {
+  flex: 0 0 auto;
+}

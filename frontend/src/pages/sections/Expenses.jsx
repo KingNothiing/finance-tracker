@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import api from '../../api/client'
+import PieChart from '../../components/PieChart'
 import { currentMonth } from '../../utils/date'
 import Section from './Section'
 
@@ -18,7 +19,7 @@ export default function Expenses() {
       try {
         const [stats, cats, accs] = await Promise.all([
           api.get('/analytics/categories/', {
-          params: { month: currentMonth() },
+            params: { month: currentMonth() },
           }),
           api.get('/categories/'),
           api.get('/accounts/'),
@@ -106,17 +107,38 @@ export default function Expenses() {
           Добавить категорию
         </button>
       </form>
-      {error && <p>{error}</p>}
-      {data.length === 0 && !error && <p>Нет данных за месяц</p>}
-      {data.length > 0 && (
-        <ul>
-          {data.map((row) => (
-            <li key={row.category_id}>
-              Категория: {row.category_id} — {row.total} ({row.percent.toFixed(1)}%)
-            </li>
-          ))}
-        </ul>
-      )}
+      <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+        {data.length > 0 && (
+          <PieChart
+            data={data.map((row, idx) => {
+              const cat = categories.find((c) => c.id === row.category_id)
+              return {
+                id: row.category_id || idx,
+                value: row.total,
+                color: cat?.color,
+                label: cat?.name || 'Без категории',
+              }
+            })}
+          />
+        )}
+        <div>
+          {error && <p>{error}</p>}
+          {data.length === 0 && !error && <p>Нет данных за месяц</p>}
+          {data.length > 0 && (
+            <ul>
+              {data.map((row, idx) => {
+                const cat = categories.find((c) => c.id === row.category_id)
+                return (
+                  <li key={row.category_id || idx}>
+                    {cat?.name || 'Без категории'} — {row.total} (
+                    {row.percent.toFixed(1)}%)
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </div>
+      </div>
       <h3>Категории</h3>
       {categories.length === 0 && !error && <p>Категорий пока нет</p>}
       {categories.length > 0 && (
