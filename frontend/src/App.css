@@ -1,42 +1,91 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+:root {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  color: #141414;
+  background: #f7f2ea;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+body {
+  margin: 0;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
 }
 
 .card {
-  padding: 2em;
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border: 1px solid #eee4d6;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
 }
 
-.read-the-docs {
-  color: #888;
+.card h1 {
+  margin: 0 0 12px;
+  font-size: 28px;
+}
+
+.card p {
+  margin: 0 0 20px;
+  color: #5b5145;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.field label {
+  font-size: 14px;
+}
+
+.field input {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #d9cbb6;
+  font-size: 14px;
+}
+
+.btn {
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: #1b6d3c;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn.secondary {
+  background: #f0e6d7;
+  color: #2a231a;
+}
+
+.nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.nav a {
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #f0e6d7;
+  color: #2a231a;
+}
+
+.section {
+  background: #fff;
+  border: 1px solid #eee4d6;
+  border-radius: 16px;
+  padding: 16px;
 }
