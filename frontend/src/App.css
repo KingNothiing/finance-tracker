@@ -52,6 +52,14 @@ body {
   font-size: 14px;
 }
 
+.field select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #d9cbb6;
+  font-size: 14px;
+  background: #fff;
+}
+
 .btn {
   width: 100%;
   padding: 10px 12px;

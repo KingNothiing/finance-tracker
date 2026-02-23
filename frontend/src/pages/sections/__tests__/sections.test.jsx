@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Expenses from '../Expenses'
 import Accounts from '../Accounts'
 import Transactions from '../Transactions'
@@ -12,9 +13,15 @@ vi.mock('../../../api/client', () => ({
 }))
 
 describe('Sections API integration', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   it('loads expenses categories', async () => {
     const api = (await import('../../../api/client')).default
-    api.get.mockResolvedValueOnce({ data: [] })
+    api.get
+      .mockResolvedValueOnce({ data: [] })
+      .mockResolvedValueOnce({ data: [] })
+      .mockResolvedValueOnce({ data: [] })
     render(<Expenses />)
     await waitFor(() => expect(api.get).toHaveBeenCalled())
     expect(screen.getByText(/Нет данных/i)).toBeInTheDocument()
@@ -30,7 +37,10 @@ describe('Sections API integration', () => {
 
   it('loads transactions', async () => {
     const api = (await import('../../../api/client')).default
-    api.get.mockResolvedValueOnce({ data: [] })
+    api.get
+      .mockResolvedValueOnce({ data: [] })
+      .mockResolvedValueOnce({ data: [] })
+      .mockResolvedValueOnce({ data: [] })
     render(<Transactions />)
     await waitFor(() => expect(api.get).toHaveBeenCalled())
     expect(screen.getByText(/Операций пока нет/i)).toBeInTheDocument()
@@ -57,5 +67,51 @@ describe('Sections API integration', () => {
     render(<Planned />)
     await waitFor(() => expect(api.get).toHaveBeenCalled())
     expect(screen.getByText(/Покупок пока нет/i)).toBeInTheDocument()
+  })
+
+  it('creates account', async () => {
+    const api = (await import('../../../api/client')).default
+    api.get.mockResolvedValueOnce({ data: [] })
+    api.post = vi.fn().mockResolvedValueOnce({
+      data: { id: 1, name: 'Cash', type: 'cash', balance: '0.00' },
+    })
+    const user = userEvent.setup()
+    render(<Accounts />)
+    await waitFor(() => expect(api.get).toHaveBeenCalled())
+    await user.type(screen.getByLabelText(/Название/i), 'Cash')
+    await user.click(screen.getByRole('button', { name: /Добавить счет/i }))
+    expect(api.post).toHaveBeenCalled()
+  })
+
+  it('creates category', async () => {
+    const api = (await import('../../../api/client')).default
+    api.get
+      .mockResolvedValueOnce({ data: [] })
+      .mockResolvedValueOnce({ data: [] })
+      .mockResolvedValueOnce({ data: [] })
+    api.post = vi.fn().mockResolvedValueOnce({
+      data: { id: 1, name: 'Food', icon: '', color: '' },
+    })
+    const user = userEvent.setup()
+    render(<Expenses />)
+    await waitFor(() => expect(api.get).toHaveBeenCalled())
+    await user.type(screen.getByLabelText(/Название категории/i), 'Food')
+    await user.click(screen.getByRole('button', { name: /Добавить категорию/i }))
+    expect(api.post).toHaveBeenCalled()
+  })
+
+  it('creates planned purchase', async () => {
+    const api = (await import('../../../api/client')).default
+    api.get.mockResolvedValueOnce({ data: [] })
+    api.post = vi.fn().mockResolvedValueOnce({
+      data: { id: 1, name: 'Phone', price: '1000.00' },
+    })
+    const user = userEvent.setup()
+    render(<Planned />)
+    await waitFor(() => expect(api.get).toHaveBeenCalled())
+    await user.type(screen.getByLabelText(/Название/i), 'Phone')
+    await user.type(screen.getByLabelText(/Цена/i), '1000')
+    await user.click(screen.getByRole('button', { name: /Добавить покупку/i }))
+    expect(api.post).toHaveBeenCalled()
   })
 })
